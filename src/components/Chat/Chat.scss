@@ -10,5 +10,8 @@
 		min-height: 40px;
 		background-color: vars.$lightGray;
 	}
-
+	&__wrapper {
+		overflow-y: scroll;
+		flex-grow: 1;
+	}
 }

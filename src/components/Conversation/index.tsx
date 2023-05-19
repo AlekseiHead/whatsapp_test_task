@@ -1,71 +1,107 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { axiosClient } from '../../utils/axios';
 import { useAuth } from '../../utils/hooks';
 import { Message } from '../Message';
 import { MessageType } from '../Message';
 type ConversationProps = {
-  tel: string,
+  id: string;
 };
 
-export const Conversation = ({ tel }: ConversationProps) => {
-  const [messages, setMessages] = useState<Array<MessageType>>();
-  const [receiptId, setReceipt] = useState('');
-  const [idInstance, apiTokenInstance] = useAuth();
-  const getMessages = () => {
-    axiosClient
-      .post(`/waInstance${idInstance}/getChatHistory/${apiTokenInstance}`, {
-        chatId: tel + `@c.us`,
-        count: 100,
-      })
-      .then((res) => {
-        console.log(res);
-        setMessages([...res.data]);
-      });
+type ReceiptType = {
+  receiptId: string;
+  body: {
+    typeWebhook: string;
+    timestamp: string;
+    idMessage: string;
+    messageData?: {
+      typeMessage: string;
+      textMessageData?: {
+        textMessage: string;
+      };
+      extendedTextMessageData?: {
+        text: string;
+      };
+    };
   };
+};
+
+export const Conversation = ({ id }: ConversationProps) => {
+  const [messages, setMessages] = useState<Array<MessageType>>([]);
+  const [receipt, setReceipt] = useState<ReceiptType>();
+  const [idInstance, apiTokenInstance] = useAuth();
 
   const deleteNotification = () => {
-    axiosClient
-      .get(
-        `waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receiptId}
+    if (receipt)
+      axiosClient
+        .delete(
+          `waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receipt.receiptId}
 			`
-      )
-      .then((res) => {
-        console.log(res);
-      });
+        )
+        .then(() => {
+          setReceipt(undefined);
+        });
   };
   const getNotifications = () => {
-    console.log('get notifications ...');
     axiosClient
       .get(
         `waInstance${idInstance}/receiveNotification/${apiTokenInstance}
 		`
       )
       .then((res) => {
-        console.log(res);
         if (res.data) {
-          console.log('RECEIVED!');
-          setReceipt(res.data.receiptId);
+          setReceipt(res.data);
         }
       });
   };
   useEffect(() => {
-    if (tel) getMessages();
-  }, [tel]);
+    setMessages([]);
+  }, [id]);
 
   useEffect(() => {
     const int = setInterval(() => {
-      if (tel) getNotifications();
+      if (id) getNotifications();
     }, 5000);
     return () => clearInterval(int);
-  });
+  }, [id]);
 
   useEffect(() => {
-    //TODO: get and push new msg to state
-    if (receiptId) deleteNotification();
-  }, [receiptId]);
+    if (receipt?.body.messageData) {
+      const { idMessage, timestamp, messageData, typeWebhook } = receipt.body;
+
+      let text = '';
+      switch (messageData.typeMessage) {
+        case 'textMessage':
+          text = messageData.textMessageData?.textMessage || '';
+          break;
+        case 'extendedTextMessage':
+          text = messageData.extendedTextMessageData?.text || '';
+          break;
+      }
+      const newMsg = {
+        idMessage,
+        textMessage: text,
+        timestamp,
+        type: typeWebhook.includes('outgoing') ? 'outgoing' : 'incoming',
+      };
+      setMessages([...messages, newMsg]);
+      deleteNotification();
+    }
+  }, [receipt?.receiptId]);
+
+  const messagesEndRef = useRef<HTMLLIElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages.length]);
 
   const msgsEl = messages
     ?.sort((a, b) => Number(a.timestamp) - Number(b.timestamp))
-    .map((msg) => <Message {...msg} key={msg.idMessage} />);
-  return <ul className="conversation">{msgsEl}</ul>;
+    .map((msg) => (msg.idMessage ? <Message {...msg} key={msg.idMessage} /> : null));
+
+  return (
+    <ul className="conversation">
+      {msgsEl}
+      <li className="conversation__end" ref={messagesEndRef}></li>
+    </ul>
+  );
 };

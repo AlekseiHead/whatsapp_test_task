@@ -1,11 +1,12 @@
 @use '../../styles/styles';
 
 .msg {
-	padding: 7px 7px 20px 7px;
+	padding: 7px 25px 20px 7px;
 	max-width: 80%;
 	border-radius: 8px;
 	margin: 5px 0;
 	position: relative;
+	list-style: none;
 
 	&_in, &_out {
 	&::before {
@@ -23,6 +24,7 @@
 
 	&_in {
 		background-color: vars.$white;
+		align-self: flex-start;
 		&::before {
 			border-top-color: vars.$white;
 			left: -8px;

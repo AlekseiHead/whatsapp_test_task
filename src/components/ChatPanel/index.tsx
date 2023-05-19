@@ -4,7 +4,7 @@ import { axiosClient } from '../../utils/axios';
 import { useAuth } from '../../utils/hooks';
 
 type ChatPanelProps = {
-  tel: string,
+  tel: string;
 };
 
 export const ChatPanel = ({ tel }: ChatPanelProps) => {
@@ -18,7 +18,10 @@ export const ChatPanel = ({ tel }: ChatPanelProps) => {
         chatId: tel + `@c.us`,
         message: msg,
       })
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res);
+        setMsg('');
+      });
   };
 
   return (
