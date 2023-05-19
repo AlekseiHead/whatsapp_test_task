@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import UserIcon from '../../assets/icons/user-solid.svg';
+import UserIcon from '../../assets/icons/User.svg';
 import { useAuth } from '../../utils/hooks';
 import { axiosClient } from '../../utils/axios';
 type UserType = {
-  tel: string,
+  tel: string;
 };
 
 export const User = ({ tel }: UserType) => {

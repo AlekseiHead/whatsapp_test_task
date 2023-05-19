@@ -10,7 +10,7 @@ export const Chat = ({ id }: ChatProps) => {
   return (
     <section className="chat">
       <header className="chat__header">
-        {id ? <User tel={id.slice(0, -5)} /> : <h3>Select a chat</h3>}
+        {id ? <User tel={id.slice(0, -5)} /> : <h3>Select chat</h3>}
       </header>
       <main className="chat__wrapper">
         <Conversation id={id} />

@@ -34,7 +34,7 @@ export const ChatPanel = ({ id }: ChatPanelProps) => {
             sendMessage();
           }
         }}
-        placeholder="Enter your message"
+        placeholder="Enter message"
       ></input>
       <button className="send-btn" onClick={sendMessage} aria-label="send message"></button>
     </footer>
