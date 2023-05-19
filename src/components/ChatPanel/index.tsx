@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import sentIcon from '../../assets/icons/Send.svg';
 import { axiosClient } from '../../utils/axios';
 import { useAuth } from '../../utils/hooks';
 
 type ChatPanelProps = {
-  tel: string;
+  id: string,
 };
 
-export const ChatPanel = ({ tel }: ChatPanelProps) => {
+export const ChatPanel = ({ id }: ChatPanelProps) => {
   const [msg, setMsg] = useState('');
 
   const [idInstance, apiTokenInstance] = useAuth();
@@ -15,11 +14,10 @@ export const ChatPanel = ({ tel }: ChatPanelProps) => {
   const sendMessage = () => {
     axiosClient
       .post(`/waInstance${idInstance}/sendMessage/${apiTokenInstance}`, {
-        chatId: tel + `@c.us`,
+        chatId: id,
         message: msg,
       })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setMsg('');
       });
   };
@@ -31,9 +29,14 @@ export const ChatPanel = ({ tel }: ChatPanelProps) => {
         type="text"
         value={msg}
         onChange={(e) => setMsg(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && e.ctrlKey) {
+            sendMessage();
+          }
+        }}
         placeholder="Enter your message"
       ></input>
-      <img className="icon" src={sentIcon} onClick={sendMessage} />
+      <button className="send-btn" onClick={sendMessage} aria-label="send message"></button>
     </footer>
   );
 };

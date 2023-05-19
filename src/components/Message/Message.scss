@@ -1,51 +1,29 @@
 @use '../../styles/styles';
 
-.msg {
-	padding: 7px 25px 20px 7px;
-	max-width: 80%;
-	border-radius: 8px;
-	margin: 5px 0;
-	position: relative;
-	list-style: none;
-
-	&_in, &_out {
-	&::before {
-		content: '';
-		position: absolute;
-		width: 16px;
-		height: 13px;
-		top: 0;
-		display: block;
-		box-sizing: border-box;
-		border: 8px solid transparent;
-		z-index: 2;
-	}
-}
-
-	&_in {
+.main {
+	display: flex;
+	height: 100vh;
+	&__bar {
+		display: flex;
+		flex-direction: column;
+		min-width: 300px;
+		height: 100%;
 		background-color: vars.$white;
-		align-self: flex-start;
-		&::before {
-			border-top-color: vars.$white;
-			left: -8px;
-
+		padding: 10px;
+		
+		.chat-thmb {
+			padding: 10px;
+			border-bottom: 2px solid vars.$lightGray;
+			&:hover {
+				background-color: vars.$extraGray;
+			}
+			&_active {
+				background-color: vars.$lightGray;
+			}
 		}
 	}
 
-	&_out {
-		&::before {
-			border-top-color: vars.$lightGreen;
-			right: -8px;
-		}
-		align-self: flex-end;
-		background-color: vars.$lightGreen;
-	}
-
-	&__time {
-		position: absolute;
-		bottom: 5px;
-		right: 5px;
-		color: vars.$gray;
-		font-size: 11px;
+	&__chat-list {
+		overflow-y: scroll;
 	}
 }

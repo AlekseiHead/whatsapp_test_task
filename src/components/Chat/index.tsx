@@ -1,20 +1,21 @@
 import { ChatPanel } from '../ChatPanel';
 import { Conversation } from '../Conversation';
+import { User } from '../User';
 
 type ChatProps = {
-  tel: string;
+  id: string;
 };
 
-export const Chat = ({ tel }: ChatProps) => {
+export const Chat = ({ id }: ChatProps) => {
   return (
     <section className="chat">
       <header className="chat__header">
-        <h3>{tel ? '+' + tel : 'Select chat'}</h3>
+        {id ? <User tel={id.slice(0, -5)} /> : <h3>Select a chat</h3>}
       </header>
       <main className="chat__wrapper">
-        <Conversation tel={tel} />
+        <Conversation id={id} />
       </main>
-      <ChatPanel tel={tel} />
+      <ChatPanel id={id} />
     </section>
   );
 };
