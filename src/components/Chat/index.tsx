@@ -1,3 +1,13 @@
-export const Chat = () => {
-  return <h2>Chat page</h2>;
+type ChatProps = {
+  tel: string,
+};
+
+export const Chat = ({ tel }: ChatProps) => {
+  return (
+    <section className="chat">
+      <header className="chat__header">
+        <h3>{tel}</h3>
+      </header>
+    </section>
+  );
 };

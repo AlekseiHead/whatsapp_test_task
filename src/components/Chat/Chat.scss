@@ -1,0 +1,10 @@
+.chat {
+	flex-grow: 1;
+	background-image: url('../../assets/images/bg.jpg');
+
+	&__header {
+		min-height: 40px;
+		background-color: vars.$lightGray;
+	}
+
+}
