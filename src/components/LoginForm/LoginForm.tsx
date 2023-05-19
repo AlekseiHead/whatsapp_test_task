@@ -2,12 +2,12 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { axiosClient } from '../../utils/axios';
 
 export type LoginType = {
-  idInstance: string,
-  apiTokenInstance: string,
+  idInstance: string;
+  apiTokenInstance: string;
 };
 
 type LoginFormProps = {
-  setAuth: (data: LoginType) => void,
+  setAuth: (data: LoginType) => void;
 };
 
 export const LoginForm = ({ setAuth }: LoginFormProps) => {
@@ -20,11 +20,9 @@ export const LoginForm = ({ setAuth }: LoginFormProps) => {
   });
 
   const onSubmit: SubmitHandler<LoginType> = (data) => {
-    console.log(data);
     const { idInstance, apiTokenInstance } = data;
     axiosClient.get(`/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`).then(
       (response) => {
-        console.log(response);
         if (response.status >= 200 && response.status <= 299) {
           setAuth({ idInstance, apiTokenInstance });
           localStorage.setItem('idInstance', idInstance);
@@ -32,13 +30,13 @@ export const LoginForm = ({ setAuth }: LoginFormProps) => {
         }
       },
       (error) => {
-        console.log(error);
+        console.error(error);
       }
     );
   };
   return (
     <main className="container">
-      <h2>Login</h2>
+      <h2>Login Green API</h2>
       <form className="login" onSubmit={handleSubmit(onSubmit)}>
         <label className="login__label" htmlFor="idInstance">
           Enter idInstance:
@@ -46,6 +44,7 @@ export const LoginForm = ({ setAuth }: LoginFormProps) => {
         <input
           type="text"
           id="idInstance"
+          placeholder="idInstance"
           className="input login__input"
           {...register('idInstance', { required: true })}
         />
@@ -55,6 +54,7 @@ export const LoginForm = ({ setAuth }: LoginFormProps) => {
         <input
           type="text"
           id="apiTokenInstance"
+          placeholder="apiTokenInstance"
           className="input login__input"
           {...register('apiTokenInstance', { required: true })}
         />
